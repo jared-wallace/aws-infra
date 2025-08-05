@@ -1,0 +1,4 @@
+jw-web-key.pem
+.terraform/
+terraform.tfstate
+.terraform.lock.hcl
