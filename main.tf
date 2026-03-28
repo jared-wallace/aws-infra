@@ -191,10 +191,10 @@ resource "aws_lb" "main" {
 
 # Target Group
 resource "aws_lb_target_group" "web" {
-  name     = "web-tg"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
+  name_prefix = "web-"
+  port        = 8080
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.main.id
 
   health_check {
     enabled             = true
@@ -204,6 +204,10 @@ resource "aws_lb_target_group" "web" {
     interval            = 30
     path                = "/"
     matcher             = "200"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   tags = {
