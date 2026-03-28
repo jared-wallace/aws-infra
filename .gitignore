@@ -1,4 +1,7 @@
 jw-web-key.pem
 .terraform/
 terraform.tfstate
+terraform.tfstate.backup
 .terraform.lock.hcl
+dns_updater.zip
+secrets.tfvars

@@ -1,4 +1,3 @@
-
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
@@ -32,7 +31,10 @@ resource "aws_launch_template" "web" {
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
-    volume_id = aws_ebs_volume.web_data.id
+    volume_id   = aws_ebs_volume.web_data.id
+    ssm_prefix  = "/website"
+    github_repo = var.github_repo
+    admin_host  = "admin.${var.domain_name}"
   }))
 
   tag_specifications {
@@ -45,7 +47,8 @@ resource "aws_launch_template" "web" {
 
 resource "aws_autoscaling_group" "web" {
   name                = "web-asg"
-  vpc_zone_identifier = aws_subnet.public[*].id
+  # Pin to the same AZ as the EBS volume — cross-AZ attach is not allowed
+  vpc_zone_identifier = [aws_subnet.public[0].id]
   target_group_arns   = [aws_lb_target_group.web.arn]
   health_check_type   = "ELB"
   min_size            = 1
@@ -63,4 +66,3 @@ resource "aws_autoscaling_group" "web" {
     propagate_at_launch = false
   }
 }
-
