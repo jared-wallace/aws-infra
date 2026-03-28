@@ -11,11 +11,14 @@ yum install -y docker git
 systemctl enable docker
 systemctl start docker
 
-# Docker Compose plugin (ARM64)
+# Docker Buildx + Compose plugins (ARM64)
 mkdir -p /usr/local/lib/docker/cli-plugins
+curl -SL "https://github.com/docker/buildx/releases/download/v0.24.0/buildx-v0.24.0.linux-arm64" \
+  -o /usr/local/lib/docker/cli-plugins/docker-buildx
 curl -SL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64" \
   -o /usr/local/lib/docker/cli-plugins/docker-compose
-chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+chmod +x /usr/local/lib/docker/cli-plugins/docker-buildx \
+         /usr/local/lib/docker/cli-plugins/docker-compose
 
 # --- Instance metadata (IMDSv2) ---
 TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \

@@ -47,7 +47,8 @@ resource "aws_launch_template" "web" {
 
 resource "aws_autoscaling_group" "web" {
   name                = "web-asg"
-  vpc_zone_identifier = aws_subnet.public[*].id
+  # Pin to the same AZ as the EBS volume — cross-AZ attach is not allowed
+  vpc_zone_identifier = [aws_subnet.public[0].id]
   target_group_arns   = [aws_lb_target_group.web.arn]
   health_check_type   = "ELB"
   min_size            = 1
