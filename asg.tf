@@ -1,4 +1,3 @@
-
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
@@ -32,7 +31,10 @@ resource "aws_launch_template" "web" {
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
-    volume_id = aws_ebs_volume.web_data.id
+    volume_id   = aws_ebs_volume.web_data.id
+    ssm_prefix  = "/website"
+    github_repo = var.github_repo
+    admin_host  = "admin.${var.domain_name}"
   }))
 
   tag_specifications {
@@ -63,4 +65,3 @@ resource "aws_autoscaling_group" "web" {
     propagate_at_launch = false
   }
 }
-
